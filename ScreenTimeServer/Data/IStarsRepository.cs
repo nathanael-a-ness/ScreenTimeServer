@@ -3,9 +3,10 @@ namespace ScreenTimeServer.Data
 {
     public interface IStarsRepository
     {
-        Task AddStarAsync(StarsEntity stars);
-        Task DeleteStarAsync(StarsEntity stars);
-        Task<List<StarsEntity>> GetAllStarsAsync();
-        Task UseStarAsync(List<StarsEntity> stars);
+        Task AddStarAsync(string note);
+        Task DeleteStarGroupAsync(StarGroupEntity starGroup);
+        Task<List<StarGroupEntity>> GetAllGroupsAsync();
+        Task<List<StarEntity>> GetStarDetailsAsync(StarGroupEntity starGroup);
+        Task UpdateStarGroupAsync(StarGroupEntity starGroup);
     }
 }

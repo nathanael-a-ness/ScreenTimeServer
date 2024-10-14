@@ -13,31 +13,38 @@ namespace ScreenTimeServer.Controllers
         private readonly IStarsRepository _starRepository = starRepository;
 
         [HttpGet]
-        [Route("GetAllStars")]
-        public async Task<List<StarsEntity>> GetAllStars()
+        [Route("GetAllGroups")]
+        public async Task<List<StarGroupEntity>> GetAllGroups()
         {
-            return await _starRepository.GetAllStarsAsync();
+            return await _starRepository.GetAllGroupsAsync();
+        }
+
+        [HttpGet]
+        [Route("GetStarDetails")]
+        public async Task<List<StarEntity>> GetStarDetails([FromBody] StarGroupEntity starGroup)
+        {
+            return await _starRepository.GetStarDetailsAsync(starGroup);
         }
 
         [HttpPost]
         [Route("AddStar")]
-        public async Task AddStar([FromBody] StarsEntity star)
+        public async Task AddStar([FromBody] string note)
         {
-            await _starRepository.AddStarAsync(star);
+            await _starRepository.AddStarAsync(note);
         }
 
         [HttpPost]
         [Route("DeleteStar")]
-        public async Task DeleteStar([FromBody] StarsEntity star)
+        public async Task DeleteStar([FromBody] StarGroupEntity star)
         {
-            await _starRepository.DeleteStarAsync(star);
+            await _starRepository.DeleteStarGroupAsync(star);
         }
 
         [HttpPost]
-        [Route("UseStars")]
-        public async Task UseStars([FromBody] List<StarsEntity> stars)
+        [Route("UpdateStarGroup")]
+        public async Task UpdateStarGroup([FromBody] StarGroupEntity starGroup)
         {
-            await _starRepository.UseStarAsync(stars);
+            await _starRepository.UpdateStarGroupAsync(starGroup);
         }
     }
 }

@@ -7,7 +7,9 @@ public class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
     public DbSet<TicketEntity> Tickets { get; set; }
-    public DbSet<StarsEntity> Stars { get; set; }
+    public DbSet<StarGroupEntity> StarGroups { get; set; }
+
+    public DbSet<StarEntity> Stars { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -16,7 +18,17 @@ public class DataContext : DbContext
             entity.HasKey(t => t.Id);
         });
 
-        modelBuilder.Entity<StarsEntity>(entity =>
+        modelBuilder.Entity<StarGroupEntity>(entity =>
+        {
+            entity.ToTable("star_groups");
+            entity.HasKey(t => t.Id);
+            entity.Property(t => t.Id).ValueGeneratedOnAdd();
+            entity.Property(t => t.Earned).HasDefaultValue(0);
+            entity.Property(t => t.Id).ValueGeneratedOnAdd();
+            entity.HasMany(t => t.Stars).WithOne(t => t.Group).HasForeignKey(t => t.GroupId);
+        });
+
+        modelBuilder.Entity<StarEntity>(entity =>
         {
             entity.ToTable("stars");
             entity.HasKey(t => t.Id);
