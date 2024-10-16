@@ -19,13 +19,6 @@ namespace ScreenTimeServer.Controllers
             return await _starRepository.GetAllGroupsAsync();
         }
 
-        [HttpGet]
-        [Route("GetStarDetails")]
-        public async Task<List<StarEntity>> GetStarDetails([FromBody] StarGroupEntity starGroup)
-        {
-            return await _starRepository.GetStarDetailsAsync(starGroup);
-        }
-
         [HttpPost]
         [Route("AddStar")]
         public async Task AddStar([FromBody] string note)

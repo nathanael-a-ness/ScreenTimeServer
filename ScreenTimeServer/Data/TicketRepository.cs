@@ -14,9 +14,9 @@ public class TicketRepository(DataContext context) : ITicketRepository
 
     public async Task<List<TicketEntity>> GetActiveTicketsAsync()
     {
-        var today = DateTime.Now.ToString("yyyy-MM-dd");
+        var today = Utility.GetToday();
         return await _context.Tickets
-            .Where(t => t.Used == false || t.UsedDate.Contains(today))
+            .Where(t => t.Used == false || t.UsedDate > today)
             .ToListAsync();
     }
     public async Task<List<TicketEntity>> GetUsedTicketsAsync()
@@ -28,6 +28,7 @@ public class TicketRepository(DataContext context) : ITicketRepository
 
     public async Task AddTicketAsync(TicketEntity ticket)
     {
+        ticket.earnedDate = DateTime.UtcNow;
         await _context.Tickets.AddAsync(ticket);
         await _context.SaveChangesAsync();
     }
@@ -40,17 +41,16 @@ public class TicketRepository(DataContext context) : ITicketRepository
 
     public async Task DeleteOldDailyTickets()
     {
-        var today = DateTime.Now.ToString("yyyy-MM-dd");
+        var today = Utility.GetToday();
         var existingTickets = await _context.Tickets
             .Where(t => 
                 (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOIVE_NIGHT")
                 && t.Used == false
-                && !t.earnedDate.Contains(today))
-            .FirstOrDefaultAsync();
+                && t.earnedDate < today).ToListAsync();
 
         if(existingTickets != null)
         {
-            _context.Tickets.Remove(existingTickets);
+            _context.Tickets.RemoveRange(existingTickets);
             await _context.SaveChangesAsync();
         }
     }
@@ -58,9 +58,9 @@ public class TicketRepository(DataContext context) : ITicketRepository
     public async Task CreateDailyTicketAsync()
     {
         await DeleteOldDailyTickets();
-        var today = DateTime.Now.ToString("yyyy-MM-dd");
+        var today = Utility.GetToday();
         var existingTicket = await _context.Tickets
-            .Where(t => (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOIVE_NIGHT") && t.earnedDate.Contains(today))
+            .Where(t => (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOIVE_NIGHT") && t.earnedDate > today)
             .FirstOrDefaultAsync();
         var icon = DateTime.Now.DayOfWeek switch
         {
@@ -75,15 +75,14 @@ public class TicketRepository(DataContext context) : ITicketRepository
         {
             for (int i = 0; i < ticketCount; i++)
             {
-                var exclamationId = Exclamation.Ids[new Random().Next(0, Exclamation.Ids.Count)];
                 var newTicket = new TicketEntity
                 {
                     Id = Guid.NewGuid().ToString(),
-                    ExclamationId = exclamationId,
+                    ExclamationId = new Random().Next(0, 20),
                     Note = "Daily Screen Time Ticket",
-                    earnedDate = DateTime.Now.ToString("o", CultureInfo.InvariantCulture),
+                    earnedDate = DateTime.UtcNow,
                     Type = icon,
-                    UsedDate = DateTimeOffset.MinValue.ToString("o", CultureInfo.InvariantCulture),
+                    UsedDate = DateTime.MinValue,
                     Used = false,
                     Redemption = "NONE",
                     Time = 20
@@ -94,13 +93,24 @@ public class TicketRepository(DataContext context) : ITicketRepository
         }
     }
 
+    public async Task DeleteTicketAsync(string ticketId)
+    {
+        _ = _context.Tickets.Remove(new TicketEntity { Id = ticketId });
+        await _context.SaveChangesAsync();
+    }
+
     public int ScreenTimeUsedToday()
     {
-        var today = DateTime.Now.ToString("yyyy-MM-dd");
+        var today = Utility.GetToday();
+        Console.WriteLine($"Today: {today}");
         var tickets = _context.Tickets
-            .Where(t => t.Used == true
-                && t.earnedDate.Contains(today));
-        var time = tickets.ToList().Aggregate(0, (acc, t) => acc + t.Time);
-        return time;
-    }
+            .Where(t => t.Used == true && t.earnedDate > today);
+        foreach (var ticket in tickets)
+        {
+            Console.WriteLine(ticket.earnedDate);
+        }
+        Console.WriteLine(tickets?.FirstOrDefault()?.earnedDate > today);
+        var time = tickets?.ToList().Aggregate(0, (acc, t) => acc + t.Time);
+        return time ?? 0;
+    }    
 }

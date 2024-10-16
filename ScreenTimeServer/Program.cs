@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeServer.Data;
 
+Console.WriteLine(DateTime.Now);
+Console.WriteLine(DateTime.Now.Date);
+Console.WriteLine(DateTime.Now.Date.ToUniversalTime());
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -29,7 +33,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("v1/swagger.json", "MyAPI V1");
+    });
 }
 
 app.UseHttpsRedirection();

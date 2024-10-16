@@ -52,6 +52,13 @@ namespace ScreenTimeServer.Controllers
             await _ticketRepository.AddTicketAsync(ticket);
         }
 
+        [HttpDelete]
+        [Route("DeleteTicket")]
+        public async Task DeleteTicket([FromQuery] string ticketId)
+        {
+            await _ticketRepository.DeleteTicketAsync(ticketId);
+        }
+
         [HttpGet]
         [Route("TodaysUsedScreenTime")]
         public int TodaysUsedScreenTime()

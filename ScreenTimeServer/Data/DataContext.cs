@@ -16,6 +16,10 @@ public class DataContext : DbContext
         modelBuilder.Entity<TicketEntity>(entity => {
             entity.ToTable("tickets");
             entity.HasKey(t => t.Id);
+            entity.Property(t => t.earnedDate)
+                .HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            entity.Property(t => t.UsedDate)
+                .HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
         });
 
         modelBuilder.Entity<StarGroupEntity>(entity =>

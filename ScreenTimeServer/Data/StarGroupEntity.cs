@@ -7,11 +7,10 @@ namespace ScreenTimeServer.Data
     {
         [Key]
         public string Id { get; set; } = "";
-        public string Date { get; set; } = "";
+        public DateTime Date { get; set; } = DateTime.MinValue;
         public string Note { get; set; } = "";
         public bool Used { get; set; }
-        public int Earned { get; set; } = 0;
-        [JsonIgnore]
+        public int Earned { get; set; } = 0;        
         public ICollection<StarEntity>? Stars { get; set; }
     }
 }

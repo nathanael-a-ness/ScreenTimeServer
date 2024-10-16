@@ -10,10 +10,11 @@ namespace ScreenTimeServer.Data
         public string Id { get; set; } = "";
         [ForeignKey("Group")]
         [Column("Group")]
+        [JsonIgnore]
         public string GroupId { get; set; } = "";
         [JsonIgnore]
         public StarGroupEntity? Group { get; set; }
-        public string Date { get; set; } = "";
+        public DateTime Date { get; set; } = DateTime.MinValue;
         public string Note { get; set; } = "";
         
     }

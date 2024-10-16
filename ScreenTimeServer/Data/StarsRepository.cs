@@ -9,7 +9,7 @@ namespace ScreenTimeServer.Data
 
         public async Task<List<StarGroupEntity>> GetAllGroupsAsync()
         {
-            return await _context.StarGroups.ToListAsync();
+            return await _context.StarGroups.Include(s => s.Stars).ToListAsync();
         }
 
         public async Task AddStarAsync(string note)
@@ -19,21 +19,24 @@ namespace ScreenTimeServer.Data
             group ??= new StarGroupEntity
             {
                 Id = Guid.NewGuid().ToString(),
-                Earned = 1,
+                Earned = 0,
                 Used = false,
                 Note = "",
-                Date = DateTime.MinValue.ToString("o", CultureInfo.InvariantCulture),
-                Stars = new List<StarEntity>()
+                Date = DateTime.MinValue,
+                Stars = []
             };
+            group.Earned += 1;
 
             var star = new StarEntity
             {
                 Id = Guid.NewGuid().ToString(),
                 Group = group,
                 Note = note,                
-                Date = DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture)
+                Date = DateTime.UtcNow
             };
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             group.Stars.Add(star);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             if (insert)
             {
@@ -58,12 +61,6 @@ namespace ScreenTimeServer.Data
         {
             _context.StarGroups.Remove(starGroup);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<StarEntity>> GetStarDetailsAsync(StarGroupEntity starGroup)
-        {
-            var group = await _context.StarGroups.Include(s => s.Stars).FirstOrDefaultAsync(s => s.Id == starGroup.Id);
-            return [.. group?.Stars];
         }
     }
 }

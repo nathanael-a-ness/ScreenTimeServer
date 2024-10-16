@@ -10,5 +10,6 @@ namespace ScreenTimeServer.Data
         Task UpdateTicketAsync(TicketEntity ticket);
         int ScreenTimeUsedToday();
         Task<List<TicketEntity>> GetAllTicketsAsync();
+        Task DeleteTicketAsync(string ticketId);
     }
 }
