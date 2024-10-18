@@ -44,7 +44,7 @@ public class TicketRepository(DataContext context) : ITicketRepository
         var today = Utility.GetToday();
         var existingTickets = await _context.Tickets
             .Where(t => 
-                (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOIVE_NIGHT")
+                (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOVIE_NIGHT")
                 && t.Used == false
                 && t.earnedDate < today).ToListAsync();
 
@@ -60,13 +60,13 @@ public class TicketRepository(DataContext context) : ITicketRepository
         await DeleteOldDailyTickets();
         var today = Utility.GetToday();
         var existingTicket = await _context.Tickets
-            .Where(t => (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOIVE_NIGHT") && t.earnedDate > today)
+            .Where(t => (t.Type == "DAILY" || t.Type == "WEEKEND" || t.Type == "MOVIE_NIGHT") && t.earnedDate > today)
             .FirstOrDefaultAsync();
         var icon = DateTime.Now.DayOfWeek switch
         {
             DayOfWeek.Sunday => "WEEKEND",
             DayOfWeek.Saturday => "WEEKEND",
-            DayOfWeek.Friday => "MOIVE_NIGHT",
+            DayOfWeek.Friday => "MOVIE_NIGHT",
             _ => "DAILY"
         };
         var isBonus = DateTime.Today.DayOfWeek == DayOfWeek.Friday || DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday;

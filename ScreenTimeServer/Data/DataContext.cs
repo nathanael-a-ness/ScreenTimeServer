@@ -30,6 +30,8 @@ public class DataContext : DbContext
             entity.Property(t => t.Earned).HasDefaultValue(0);
             entity.Property(t => t.Id).ValueGeneratedOnAdd();
             entity.HasMany(t => t.Stars).WithOne(t => t.Group).HasForeignKey(t => t.GroupId);
+            entity.Property(t => t.Date)
+                .HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
         });
 
         modelBuilder.Entity<StarEntity>(entity =>
@@ -37,6 +39,8 @@ public class DataContext : DbContext
             entity.ToTable("stars");
             entity.HasKey(t => t.Id);
             entity.Property(t => t.Id).ValueGeneratedOnAdd();
+            entity.Property(t => t.Date)
+                .HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
         });
     }
 }

@@ -53,6 +53,11 @@ namespace ScreenTimeServer.Data
 
         public async Task UpdateStarGroupAsync(StarGroupEntity starGroup)
         {
+            var oldGroup = _context.StarGroups.Where(s => s.Id == starGroup.Id).FirstOrDefault();
+            if(oldGroup != null && oldGroup.Used != starGroup.Used)
+            {
+                starGroup.Date = DateTime.UtcNow;
+            }
             _context.StarGroups.Update(starGroup);
             await _context.SaveChangesAsync();
         }
