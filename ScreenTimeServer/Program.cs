@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.EntityFrameworkCore;
+using ScreenTimeServer.Auth;
 using ScreenTimeServer.Data;
 
 Console.WriteLine(DateTime.Now);
@@ -7,8 +8,15 @@ Console.WriteLine(DateTime.Now.Date);
 Console.WriteLine(DateTime.Now.Date.ToUniversalTime());
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration
+    .AddJsonFile("secrets.json");
+
+builder.Services.Configure<ApiKeyOptions>(
+    builder.Configuration.GetSection("Secrets"));
 
 // Add services to the container.
+builder.Services.AddSingleton<ApiKeyAuthorizationFilter>();
+builder.Services.AddSingleton<IApiKeyValidator, ApiKeyValidator>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

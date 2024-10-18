@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ScreenTimeServer.Auth;
 using ScreenTimeServer.Data;
 
 namespace ScreenTimeServer.Controllers
@@ -11,6 +12,7 @@ namespace ScreenTimeServer.Controllers
         private readonly ITicketRepository _ticketRepository = ticketRepository;
 
         [HttpPost]
+        [ApiKey]
         [Route("CreateDailyTicket")]
         public async Task CreateDailyTicket()
         {
@@ -18,6 +20,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpGet]
+        [ApiKey]
         [Route("GetAllTickets")]
         public async Task<List<TicketEntity>> GetAllTickets()
         {
@@ -25,6 +28,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpGet]
+        [ApiKey]
         [Route("GetActiveTickets")]
         public async Task<List<TicketEntity>> GetActiveTickets()
         {
@@ -32,6 +36,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpGet]
+        [ApiKey]
         [Route("GetUsedTickets")]
         public async Task<List<TicketEntity>> GetUsedTickets()
         {
@@ -39,6 +44,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpPost]
+        [ApiKey]
         [Route("UpdateTicket")]
         public async Task UpdateTicket([FromBody] TicketEntity ticket)
         {
@@ -46,6 +52,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpPost]
+        [ApiKey]
         [Route("AddTicket")]
         public async Task AddTicket([FromBody] TicketEntity ticket)
         {
@@ -53,6 +60,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpDelete]
+        [ApiKey]
         [Route("DeleteTicket")]
         public async Task DeleteTicket([FromQuery] string ticketId)
         {
@@ -60,6 +68,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpGet]
+        [ApiKey]
         [Route("TodaysUsedScreenTime")]
         public int TodaysUsedScreenTime()
         {

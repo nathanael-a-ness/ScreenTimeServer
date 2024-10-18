@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ScreenTimeServer.Auth;
 using ScreenTimeServer.Data;
 
 namespace ScreenTimeServer.Controllers
@@ -13,6 +14,7 @@ namespace ScreenTimeServer.Controllers
         private readonly IStarsRepository _starRepository = starRepository;
 
         [HttpGet]
+        [ApiKey]
         [Route("GetAllGroups")]
         public async Task<List<StarGroupEntity>> GetAllGroups()
         {
@@ -20,6 +22,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpPost]
+        [ApiKey]
         [Route("AddStar")]
         public async Task AddStar([FromBody] string note)
         {
@@ -27,6 +30,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpPost]
+        [ApiKey]
         [Route("DeleteStar")]
         public async Task DeleteStar([FromBody] StarGroupEntity star)
         {
@@ -34,6 +38,7 @@ namespace ScreenTimeServer.Controllers
         }
 
         [HttpPost]
+        [ApiKey]
         [Route("UpdateStarGroup")]
         public async Task UpdateStarGroup([FromBody] StarGroupEntity starGroup)
         {
